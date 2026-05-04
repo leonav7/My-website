@@ -41,41 +41,45 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-// ── scroll reveal ──
+// ── scroll reveal (replays every time element enters/leaves viewport) ──
 const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+function setDelay(el, seconds) {
+  el.style.setProperty('--reveal-delay', `${seconds}s`);
+}
+
 if (!prefersReduced) {
-  // section headers — staggered cascade
+  // section headers — cascade: eyebrow → title → subtitle → divider
   document.querySelectorAll('.section-header').forEach(header => {
     const eyebrow  = header.querySelector('.section-eyebrow');
     const title    = header.querySelector('.section-title');
     const subtitle = header.querySelector('.section-subtitle');
     const divider  = header.querySelector('.divider');
-    if (eyebrow)  { eyebrow.classList.add('reveal');       eyebrow.style.transitionDelay  = '0s'; }
-    if (title)    { title.classList.add('reveal');         title.style.transitionDelay    = '0.12s'; }
-    if (subtitle) { subtitle.classList.add('reveal');      subtitle.style.transitionDelay = '0.22s'; }
-    if (divider)  { divider.classList.add('reveal-scale'); divider.style.transitionDelay  = '0.34s'; }
+    if (eyebrow)  { eyebrow.classList.add('reveal');       setDelay(eyebrow,  0); }
+    if (title)    { title.classList.add('reveal');         setDelay(title,    0.12); }
+    if (subtitle) { subtitle.classList.add('reveal');      setDelay(subtitle, 0.22); }
+    if (divider)  { divider.classList.add('reveal-scale'); setDelay(divider,  0.34); }
   });
 
-  // service labels + cards
+  // service labels + cards (stagger in groups of 3)
   document.querySelectorAll('.services-category-label').forEach(el => el.classList.add('reveal'));
   document.querySelectorAll('.service-card').forEach((el, i) => {
     el.classList.add('reveal');
-    el.style.transitionDelay = `${(i % 3) * 0.08}s`;
+    setDelay(el, (i % 3) * 0.09);
   });
 
-  // sector pills — cascade left to right
+  // sector pills — ripple across
   document.querySelectorAll('.sector-pill').forEach((el, i) => {
     el.classList.add('reveal');
-    el.style.transitionDelay = `${i * 0.06}s`;
+    setDelay(el, i * 0.055);
   });
 
-  // about section — slide in from sides
+  // about — slide from sides
   document.querySelector('.about-image-wrap')?.classList.add('reveal-left');
   document.querySelector('.about-text')?.classList.add('reveal-right');
   document.querySelectorAll('.about-feature').forEach((el, i) => {
     el.classList.add('reveal');
-    el.style.transitionDelay = `${i * 0.08}s`;
+    setDelay(el, i * 0.08);
   });
 
   // contact section
@@ -83,18 +87,22 @@ if (!prefersReduced) {
   document.querySelector('.contact-inner > div:last-child')?.classList.add('reveal-right');
   document.querySelectorAll('.contact-item').forEach((el, i) => {
     el.classList.add('reveal');
-    el.style.transitionDelay = `${0.1 + i * 0.12}s`;
+    setDelay(el, 0.1 + i * 0.12);
   });
 
-  // one observer for all reveal types
+  // single observer — adds/removes .visible on every scroll in/out
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(({ isIntersecting, target }) => {
       if (isIntersecting) {
         target.classList.add('visible');
-        observer.unobserve(target);
+      } else {
+        target.classList.remove('visible');
       }
     });
-  }, { threshold: 0.12 });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -20px 0px'  // trigger 20px before bottom edge
+  });
 
   document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale')
     .forEach(el => observer.observe(el));
