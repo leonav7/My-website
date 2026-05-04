@@ -1,8 +1,27 @@
-// ── navbar scroll ──
-const navbar = document.getElementById('navbar');
+// ── navbar scroll + scroll-to-top button ──
+const navbar        = document.getElementById('navbar');
+const scrollTopBtn  = document.getElementById('scrollTop');
+const progressRing  = document.getElementById('scrollProgress');
+const circumference = 150.8; // 2 * π * 24
+
 window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', window.scrollY > 40);
+  const scrolled  = window.scrollY;
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+  // navbar style
+  navbar.classList.toggle('scrolled', scrolled > 40);
+
+  // show button after 300px
+  scrollTopBtn.classList.toggle('visible', scrolled > 300);
+
+  // progress ring fills as user scrolls
+  const progress = maxScroll > 0 ? scrolled / maxScroll : 0;
+  progressRing.style.strokeDashoffset = circumference - progress * circumference;
 }, { passive: true });
+
+scrollTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 // ── hamburger + mobile dropdown ──
 const hamburger      = document.getElementById('hamburger');
