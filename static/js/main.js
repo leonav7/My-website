@@ -7,14 +7,30 @@ window.addEventListener('scroll', () => {
 // hamburger menu
 const hamburger = document.getElementById('hamburger');
 const navLinks  = document.getElementById('navLinks');
+const navDropdown     = document.querySelector('.nav-dropdown');
+const dropdownToggle  = document.querySelector('.nav-dropdown-toggle');
+
 hamburger.addEventListener('click', () => {
   hamburger.classList.toggle('open');
   navLinks.classList.toggle('open');
+  // close dropdown whenever the nav closes
+  if (!navLinks.classList.contains('open')) {
+    navDropdown.classList.remove('open');
+  }
 });
+
+// toggle services dropdown on click (works for both touch and mouse)
+dropdownToggle.addEventListener('click', e => {
+  e.preventDefault();
+  navDropdown.classList.toggle('open');
+});
+
 navLinks.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', () => {
+    if (link === dropdownToggle) return; // handled above
     hamburger.classList.remove('open');
     navLinks.classList.remove('open');
+    navDropdown.classList.remove('open');
   });
 });
 
