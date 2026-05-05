@@ -195,6 +195,15 @@ img { max-width: 100%; display: block; }
   gap: 0.3rem;
   cursor: pointer;
 }
+/* invisible bridge so cursor doesn't lose hover crossing the gap */
+.nav-dropdown::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 0.85rem;
+}
 .nav-dropdown-menu {
   display: flex;
   flex-direction: column;
