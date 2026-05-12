@@ -49,10 +49,34 @@ navLinks.querySelectorAll('a').forEach(link => {
   });
 });
 
+// ── Other Services modal ──
+const otherServicesLink  = document.getElementById('other-services-link');
+const otherServicesModal = document.getElementById('otherServicesModal');
+const closeModalBtn      = document.getElementById('closeOtherServices');
+
+function openModal() {
+  otherServicesModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  hamburger.classList.remove('open');
+  navLinks.classList.remove('open');
+  navDropdown.classList.remove('open');
+}
+function closeModal() {
+  otherServicesModal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+otherServicesLink.addEventListener('click', e => { e.preventDefault(); openModal(); });
+closeModalBtn.addEventListener('click', closeModal);
+otherServicesModal.addEventListener('click', e => { if (e.target === otherServicesModal) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
 // ── smooth scroll ──
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
-    const target = document.querySelector(a.getAttribute('href'));
+    const href = a.getAttribute('href');
+    if (href === '#') return;
+    const target = document.querySelector(href);
     if (target) {
       e.preventDefault();
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
